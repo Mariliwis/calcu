@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Gastos Diarios</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <style>
+        body {
+            background-color: #f0f8ff;
+            color: #023047;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .container {
+            max-width: 600px;
+            margin-top: 50px;
+        }
+
+        .btn-primary {
+            background-color: #219ebc;
+            border-color: #219ebc;
+        }
+
+        .btn-primary:hover {
+            background-color: #126782;
+        }
+
+        .card {
+            background-color: #e0f7fa;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .gasto-item {
+            transition: all 0.3s ease-in-out;
+        }
+
+        .resumen {
+            background-color: #caf0f8;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="text-center mb-4">Calculadora de Gastos Diarios</h1>
+        <div class="card p-4 mb-3">
+            <div class="mb-3">
+                <label for="concepto" class="form-label">Concepto</label>
+                <input type="text" class="form-control" id="concepto" placeholder="Ej. Comida">
+            </div>
+            <div class="mb-3">
+                <label for="monto" class="form-label">Monto</label>
+                <input type="number" class="form-control" id="monto" placeholder="Ej. 100">
+            </div>
+            <button class="btn btn-primary w-100" onclick="agregarGasto()">Agregar Gasto</button>
+        </div>
+
+        <ul class="list-group mb-3" id="listaGastos"></ul>
+
+        <div class="resumen animate__animated animate__fadeInUp">
+            <h4>Total Gastado: $<span id="total">0</span></h4>
+            <p id="consejo">Empieza por registrar todos tus gastos. Cada peso cuenta.</p>
+        </div>
+    </div>
+
+    <script>
+        let total = 0;
+
+        function agregarGasto() {
+            const conceptoInput = document.getElementById('concepto');
+            const montoInput = document.getElementById('monto');
+            const lista = document.getElementById('listaGastos');
+            const totalDisplay = document.getElementById('total');
+            const consejo = document.getElementById('consejo');
+
+            const concepto = conceptoInput.value.trim();
+            const monto = parseFloat(montoInput.value);
+
+            if (concepto === '' || isNaN(monto) || monto <= 0) {
+                alert('Por favor ingresa un concepto válido y un monto positivo.');
+                return;
+            }
+
+            // Crear el elemento de la lista
+            const li = document.createElement('li');
+            li.className = 'list-group-item d-flex justify-content-between align-items-center gasto-item animate__animated animate__fadeInLeft';
+            li.innerHTML = `<strong>${concepto}</strong><span>$${monto.toFixed(2)}</span>`;
+
+            lista.appendChild(li);
+
+            total += monto;
+            totalDisplay.textContent = total.toFixed(2);
+
+            actualizarConsejo(total);
+
+            conceptoInput.value = '';
+            montoInput.value = '';
+        }
+
+        function actualizarConsejo(total) {
+            const consejo = document.getElementById('consejo');
+            let mensaje = "";
+
+            if (total < 100) {
+                mensaje = "Vas bien. Sigue controlando tus pequeños gastos.";
+            } else if (total < 300) {
+                mensaje = "Muy bien. Puedes identificar áreas de mejora.";
+            } else if (total < 600) {
+                mensaje = "¡Atención! Revisa en qué podrías ahorrar un poco más.";
+            } else {
+                mensaje = "Cuidado. Podrías estar gastando más de lo necesario.";
+            }
+
+            consejo.textContent = mensaje;
+            consejo.classList.remove("animate__fadeInUp");
+            void consejo.offsetWidth; // Re-trigger animation
+            consejo.classList.add("animate__fadeInUp");
+        }
+    </script>
+</body>
+
+</html>
